@@ -8,7 +8,11 @@
   <title>À table — Mon carnet de menus</title>
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
   <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./recipe-style.css">
+  <script src="./recipes.js" defer></script>
+  <script src="./recipe-core.js" defer></script>
   <script src="./core.js" defer></script>
+  <script src="./recipe-ui.js" defer></script>
   <script src="./app.js" defer></script>
 </head>
 <body>
@@ -26,6 +30,7 @@
     <symbol id="i-bag" viewBox="0 0 24 24"><path d="M5 7h14l1 14H4L5 7Zm3 0V6a4 4 0 0 1 8 0v1"/></symbol>
     <symbol id="i-note" viewBox="0 0 24 24"><path d="M5 3h14v18H5zM8 8h8M8 12h8M8 16h5"/></symbol>
     <symbol id="i-edit" viewBox="0 0 24 24"><path d="m15 4 5 5M4 20l5-1L21 7l-5-5L4 14v6Z"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 6C9 3 5 3 2 4v15c4-1 7 0 10 2 3-2 6-3 10-2V4c-3-1-7-1-10 2Zm0 0v15M6 8l3 1m-3 3 3 1m6-4 3-1m-3 5 3-1"/></symbol>
     <symbol id="i-plate" viewBox="0 0 40 40"><circle cx="20" cy="20" r="11"/><circle cx="20" cy="20" r="7"/><path d="M3 7v9c0 3 4 3 4 0V7M5 7v26M35 7v26M35 7c-5 0-5 13 0 13"/></symbol>
   </defs></svg>
   <a class="skip-link" href="#planning">Aller au planning</a>
@@ -55,7 +60,7 @@
 
       <div class="workspace">
         <section class="planner" id="planning" aria-labelledby="planning-title" tabindex="-1">
-          <div class="section-heading"><div class="section-label"><span class="section-number">01</span><h2 id="planning-title">Vos menus</h2></div><span class="meal-count" id="meal-count">0 / 9 repas prévus</span></div>
+          <div class="section-heading"><div class="section-label"><span class="section-number">01</span><h2 id="planning-title">Vos menus</h2></div><div class="planner-heading-actions"><span class="meal-count" id="meal-count">0 / 9 repas prévus</span><button type="button" class="button button-outline" id="catalog-button" aria-haspopup="dialog"><svg class="icon" aria-hidden="true"><use href="#i-book"/></svg>Recettes</button></div></div>
           <div class="weekday-grid" id="weekday-grid"></div>
           <div class="weekend-label"><span>Le week-end, on prend le temps</span><span class="weekend-rule"></span></div>
           <div class="weekend-grid" id="weekend-grid"></div>
@@ -65,15 +70,22 @@
         <aside class="shopping-panel" aria-labelledby="shopping-title">
           <div class="section-heading"><div class="section-label"><span class="section-number">02</span><h2 id="shopping-title">Les courses</h2></div><svg class="icon shopping-bag" aria-hidden="true"><use href="#i-bag"/></svg></div>
           <p class="shopping-subtitle">Ce qu’il faut pour la semaine.</p>
-          <div class="shopping-empty" id="shopping-empty"><span class="empty-bag"><svg aria-hidden="true"><use href="#i-bag"/></svg></span><p>Un petit tour des placards,<br>et on fait la liste.</p></div>
-          <ul class="shopping-list" id="shopping-list" aria-label="Liste de courses"></ul>
-          <form class="shopping-form" id="shopping-form">
-            <label for="shopping-name">Ajouter un article</label>
-            <input id="shopping-name" name="name" placeholder="Un ingrédient, un produit…" maxlength="200" required autocomplete="off">
-            <div class="shopping-form-bottom"><label class="visually-hidden" for="shopping-quantity">Quantité et unité</label><input id="shopping-quantity" name="quantity" placeholder="Quantité (ex. 500 g)" maxlength="60" autocomplete="off"><button type="submit" class="button button-primary"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg>Ajouter</button></div>
-          </form>
-          <div class="shopping-footer"><span id="shopping-count">Aucun article</span><button type="button" class="text-button" id="clear-checked" hidden>Retirer les cochés</button></div>
-          <p class="shopping-hint">Une liste à composer librement, indépendante des ingrédients des menus.</p>
+          <section class="auto-shopping-section" id="auto-shopping-section" aria-labelledby="auto-shopping-title">
+            <h3 id="auto-shopping-title" class="shopping-group-title">À acheter pour les recettes</h3>
+            <p id="auto-shopping-empty" class="auto-shopping-empty">Les ingrédients s’ajoutent ici quand vous planifiez une recette.</p>
+            <div class="auto-shopping-list" id="auto-shopping-list" aria-label="Ingrédients des recettes planifiées" role="group"></div>
+          </section>
+          <section class="manual-shopping-section" aria-labelledby="manual-shopping-title">
+            <h3 id="manual-shopping-title" class="shopping-group-title">Ajouts manuels</h3>
+            <div class="shopping-empty" id="shopping-empty"><p>Aucun ajout pour le moment.</p></div>
+            <ul class="shopping-list" id="shopping-list" aria-label="Articles ajoutés manuellement"></ul>
+            <form class="shopping-form" id="shopping-form">
+              <label for="shopping-name">Ajouter un article</label>
+              <input id="shopping-name" name="name" placeholder="Un ingrédient, un produit…" maxlength="200" required autocomplete="off">
+              <div class="shopping-form-bottom"><label class="visually-hidden" for="shopping-quantity">Quantité et unité</label><input id="shopping-quantity" name="quantity" placeholder="Quantité (ex. 500 g)" maxlength="60" autocomplete="off"><button type="submit" class="button button-primary"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg>Ajouter</button></div>
+            </form>
+            <div class="shopping-footer"><span id="shopping-count">Aucun article</span><button type="button" class="text-button" id="clear-checked" hidden>Retirer les cochés</button></div>
+          </section>
         </aside>
       </div>
 
@@ -84,16 +96,71 @@
 
   <dialog id="meal-dialog" class="modal" aria-labelledby="meal-dialog-title"><form id="meal-form">
     <div class="modal-heading"><div><p class="eyebrow" id="meal-date"></p><h2 id="meal-dialog-title">Prévoir le dîner</h2></div><button class="icon-button" type="button" data-close="meal-dialog" aria-label="Fermer l’éditeur de repas"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div>
-    <label for="meal-name">Au menu <span class="required-label">obligatoire</span></label><input id="meal-name" name="name" maxlength="200" placeholder="Qu’avez-vous envie de cuisiner ?" required autocomplete="off">
-    <label for="meal-ingredients">Ingrédients <span class="optional-label">facultatif</span></label><textarea id="meal-ingredients" name="ingredients" rows="4" maxlength="6000" placeholder="Un ingrédient par ligne, avec sa quantité si besoin."></textarea>
+    <button id="meal-recipe-pick" class="button button-outline meal-recipe-pick" type="button" aria-haspopup="dialog"><svg class="icon" aria-hidden="true"><use href="#i-book"/></svg>Choisir une recette</button>
+    <div class="meal-recipe-summary" id="meal-recipe-summary" hidden>
+      <h3 id="meal-recipe-title"></h3>
+      <label for="meal-portions">Nombre de portions</label>
+      <input id="meal-portions" name="portions" type="number" min="1" max="99" step="1" inputmode="numeric">
+      <div id="meal-recipe-options" class="meal-recipe-options" role="group" aria-label="Ingrédients facultatifs" hidden></div>
+      <h4>Ingrédients pour ce repas</h4><ul id="meal-recipe-ingredients" class="recipe-ingredients"></ul>
+      <details class="recipe-meal-steps"><summary>Étapes de préparation</summary><ol id="meal-recipe-steps" class="recipe-steps"></ol></details>
+      <button id="meal-recipe-clear" class="text-button" type="button">Passer à la saisie libre</button>
+    </div>
+    <div id="meal-free-fields">
+      <label for="meal-name">Au menu <span class="required-label">obligatoire</span></label><input id="meal-name" name="name" maxlength="200" placeholder="Qu’avez-vous envie de cuisiner ?" required autocomplete="off">
+      <label for="meal-ingredients">Ingrédients <span class="optional-label">facultatif</span></label><textarea id="meal-ingredients" name="ingredients" rows="4" maxlength="6000" placeholder="Un ingrédient par ligne, avec sa quantité si besoin."></textarea>
+    </div>
     <label for="meal-note">Une note pour plus tard <span class="optional-label">facultatif</span></label><textarea id="meal-note" name="note" rows="2" maxlength="3000" placeholder="À décongeler, restes à prévoir, lien d’une recette…"></textarea>
     <p class="form-error" id="meal-error" role="alert" hidden></p>
     <div class="modal-actions"><button id="delete-meal" class="text-button danger-text" type="button"><svg class="icon" aria-hidden="true"><use href="#i-trash"/></svg>Supprimer</button><div><button class="button button-quiet" type="button" data-close="meal-dialog">Annuler</button><button class="button button-primary" type="submit">Enregistrer le menu</button></div></div>
   </form></dialog>
 
-  <dialog id="backup-dialog" class="modal modal-small" aria-labelledby="backup-title"><div class="modal-heading"><div><p class="eyebrow">GARDER UNE COPIE</p><h2 id="backup-title">Vos sauvegardes</h2></div><button class="icon-button" type="button" data-close="backup-dialog" aria-label="Fermer les sauvegardes"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div><p class="modal-intro">Exportez toutes vos semaines pour les conserver ou les retrouver dans un autre navigateur.</p><button class="backup-choice" type="button" id="export-button"><svg class="icon" aria-hidden="true"><use href="#i-download"/></svg><span><strong>Exporter mes données</strong><small>Télécharger une sauvegarde JSON.</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></button><button class="backup-choice" type="button" id="import-button"><svg class="icon" aria-hidden="true"><use href="#i-upload"/></svg><span><strong>Importer une sauvegarde</strong><small>Remplace toutes les données actuelles après confirmation.</small></span></button><input id="import-file" type="file" accept=".json,application/json" hidden><p class="form-error" id="import-error" role="alert" hidden></p><p class="backup-note">Les données ne se synchronisent pas automatiquement entre vos appareils.</p></dialog>
+  <dialog id="catalog-dialog" class="modal recipe-catalog" aria-labelledby="catalog-title">
+    <div class="modal-heading">
+      <div><p class="eyebrow">LE CARNET DE CUISINE</p><h2 id="catalog-title">Catalogue de recettes</h2></div>
+      <button class="icon-button" type="button" data-close="catalog-dialog" aria-label="Fermer le catalogue"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button>
+    </div>
+    <div class="catalog-toolbar">
+      <div class="catalog-search"><label class="visually-hidden" for="catalog-search">Rechercher par nom ou ingrédient</label><input id="catalog-search" type="search" placeholder="Rechercher une recette ou un ingrédient" autocomplete="off"></div>
+      <div class="catalog-actions">
+        <button class="button button-outline" type="button" id="catalog-my-recipes" aria-pressed="false" aria-controls="catalog-list">Mes recettes</button>
+        <button class="button button-primary" type="button" id="recipe-create" aria-haspopup="dialog"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg>Créer une recette</button>
+      </div>
+    </div>
+    <p class="catalog-message" id="catalog-message" role="status" hidden></p>
+    <div class="catalog-layout">
+      <div id="catalog-list" class="catalog-list" aria-label="Recettes par complexité"></div>
+      <section id="catalog-detail" class="catalog-detail" aria-label="Aperçu de la recette" tabindex="-1"></section>
+    </div>
+  </dialog>
 
-  <dialog id="duplicate-dialog" class="modal modal-small" aria-labelledby="duplicate-title"><form id="duplicate-form"><div class="modal-heading"><div><p class="eyebrow">UNE SEMAINE D’AVANCE</p><h2 id="duplicate-title">Reprendre ces menus</h2></div><button class="icon-button" type="button" data-close="duplicate-dialog" aria-label="Fermer la duplication"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div><p class="modal-intro">Copiez les 9 emplacements vers une autre semaine. La liste de courses de destination sera conservée.</p><label for="duplicate-date">Une date dans la semaine de destination</label><input type="date" id="duplicate-date" required min="1900-01-01" max="9998-12-31"><p id="duplicate-preview" class="date-preview"></p><p class="form-error" id="duplicate-error" role="alert" hidden></p><div class="modal-actions"><span></span><button class="button button-primary" type="submit">Dupliquer les menus</button></div></form></dialog>
+  <dialog id="recipe-editor-dialog" class="modal recipe-editor" aria-labelledby="recipe-editor-title">
+    <form id="recipe-editor-form">
+      <div class="modal-heading">
+        <div><p class="eyebrow">VOTRE CARNET DE CUISINE</p><h2 id="recipe-editor-title">Créer une recette</h2></div>
+        <button class="icon-button" type="button" data-close="recipe-editor-dialog" aria-label="Fermer l’éditeur de recette"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button>
+      </div>
+      <div class="recipe-identity-fields">
+        <div><label for="recipe-name">Nom du plat</label><input id="recipe-name" name="name" maxlength="200" required autocomplete="off"></div>
+        <div><label for="recipe-servings">Portions</label><input id="recipe-servings" name="servings" type="number" min="1" max="99" step="1" value="2" required inputmode="numeric"></div>
+      </div>
+      <fieldset class="recipe-ingredient-fieldset">
+        <legend>Ingrédients</legend>
+        <p class="recipe-field-help">Choisissez une suggestion pour réutiliser un ingrédient connu, ou créez le vôtre. Laissez la quantité vide pour doser à l’œil.</p>
+        <div id="recipe-ingredient-rows"></div>
+        <button class="text-button" type="button" id="recipe-add-ingredient"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg>Ajouter un ingrédient</button>
+      </fieldset>
+      <label for="recipe-steps">Étapes de préparation</label>
+      <p class="recipe-field-help" id="recipe-steps-help">Écrivez une étape par ligne.</p>
+      <textarea id="recipe-steps" name="steps" rows="5" maxlength="60059" aria-describedby="recipe-steps-help" required></textarea>
+      <p class="form-error" id="recipe-editor-error" role="alert" hidden></p>
+      <div class="modal-actions"><span></span><div><button class="button button-quiet" type="button" data-close="recipe-editor-dialog">Annuler</button><button class="button button-primary" type="submit">Enregistrer la recette</button></div></div>
+    </form>
+  </dialog>
+
+  <dialog id="backup-dialog" class="modal modal-small" aria-labelledby="backup-title"><div class="modal-heading"><div><p class="eyebrow">GARDER UNE COPIE</p><h2 id="backup-title">Vos sauvegardes</h2></div><button class="icon-button" type="button" data-close="backup-dialog" aria-label="Fermer les sauvegardes"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div><p class="modal-intro">Exportez vos semaines et vos recettes personnelles pour les conserver ou les retrouver dans un autre navigateur.</p><button class="backup-choice" type="button" id="export-button"><svg class="icon" aria-hidden="true"><use href="#i-download"/></svg><span><strong>Exporter mes données</strong><small>Télécharger une sauvegarde JSON.</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></button><button class="backup-choice" type="button" id="import-button"><svg class="icon" aria-hidden="true"><use href="#i-upload"/></svg><span><strong>Importer une sauvegarde</strong><small>Remplace toutes les données actuelles après confirmation.</small></span></button><input id="import-file" type="file" accept=".json,application/json" hidden><p class="form-error" id="import-error" role="alert" hidden></p><p class="backup-note">Les données ne se synchronisent pas automatiquement entre vos appareils.</p></dialog>
+
+  <dialog id="duplicate-dialog" class="modal modal-small" aria-labelledby="duplicate-title"><form id="duplicate-form"><div class="modal-heading"><div><p class="eyebrow">UNE SEMAINE D’AVANCE</p><h2 id="duplicate-title">Reprendre ces menus</h2></div><button class="icon-button" type="button" data-close="duplicate-dialog" aria-label="Fermer la duplication"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div><p class="modal-intro">Copiez les 9 emplacements vers une autre semaine. Les ingrédients des recettes seront recalculés et les ajouts manuels de destination seront conservés.</p><label for="duplicate-date">Une date dans la semaine de destination</label><input type="date" id="duplicate-date" required min="1900-01-01" max="9998-12-31"><p id="duplicate-preview" class="date-preview"></p><p class="form-error" id="duplicate-error" role="alert" hidden></p><div class="modal-actions"><span></span><button class="button button-primary" type="submit">Dupliquer les menus</button></div></form></dialog>
 
   <dialog id="confirm-dialog" class="modal modal-small" aria-labelledby="confirm-title" aria-describedby="confirm-message"><h2 id="confirm-title"></h2><p id="confirm-message" class="modal-intro"></p><div class="confirm-actions"><button class="button button-outline" id="confirm-cancel" type="button">Annuler</button><button class="button button-danger" id="confirm-ok" type="button">Confirmer</button></div></dialog>
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
