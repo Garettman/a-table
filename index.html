@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f4ed">
+  <meta name="description" content="Votre carnet de menus : les dîners de la semaine, les déjeuners et dîners du week-end, et les courses qui vont avec.">
+  <title>À table — Mon carnet de menus</title>
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./core.js" defer></script>
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <svg class="icon-library" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs>
+    <symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="m14 6-6 6 6 6M8 12h12"/></symbol>
+    <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="m10 6 6 6-6 6M4 12h12"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+    <symbol id="i-print" viewBox="0 0 24 24"><path d="M7 8V3h10v5M7 17H4V9h16v8h-3M7 14h10v7H7zM16 11h1"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5"/></symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 15V3M7 8l5-5 5 5M4 16v5h16v-5"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><path d="M8 8h12v13H8zM16 8V3H3v13h5"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M9 6V3h6v3M6 6l1 15h10l1-15M10 10v7m4-7v7"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="i-bag" viewBox="0 0 24 24"><path d="M5 7h14l1 14H4L5 7Zm3 0V6a4 4 0 0 1 8 0v1"/></symbol>
+    <symbol id="i-note" viewBox="0 0 24 24"><path d="M5 3h14v18H5zM8 8h8M8 12h8M8 16h5"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24"><path d="m15 4 5 5M4 20l5-1L21 7l-5-5L4 14v6Z"/></symbol>
+    <symbol id="i-plate" viewBox="0 0 40 40"><circle cx="20" cy="20" r="11"/><circle cx="20" cy="20" r="7"/><path d="M3 7v9c0 3 4 3 4 0V7M5 7v26M35 7v26M35 7c-5 0-5 13 0 13"/></symbol>
+  </defs></svg>
+  <a class="skip-link" href="#planning">Aller au planning</a>
+  <div class="app-shell">
+    <header class="masthead">
+      <a class="brand" href="./index.html" aria-label="À table, accueil"><svg class="brand-icon" aria-hidden="true"><use href="#i-plate"/></svg><span>À table<span class="brand-dot">.</span></span></a>
+      <span class="brand-caption">LE CARNET DES BONS REPAS</span>
+      <div class="header-actions">
+        <button class="button button-quiet" type="button" id="print-button" aria-label="Imprimer le planning"><svg class="icon" aria-hidden="true"><use href="#i-print"/></svg><span>Imprimer</span></button>
+        <button class="button button-outline" type="button" id="backup-button" aria-label="Ouvrir les sauvegardes"><svg class="icon" aria-hidden="true"><use href="#i-download"/></svg><span>Sauvegardes</span></button>
+      </div>
+    </header>
+
+    <main>
+      <section class="intro" aria-labelledby="page-title">
+        <div><p class="eyebrow">UN PEU D’ORGANISATION, BEAUCOUP DE PLAISIR</p><h1 id="page-title">Cette semaine,<br><em>à table.</em></h1></div>
+        <div class="intro-aside"><p>Les soirs de semaine.<br>Les déjeuners et dîners du week-end.</p><div class="saved-state" id="save-state" role="status"><span class="status-dot"></span><span id="save-label">Sauvegarde automatique</span></div></div>
+        <svg class="herb-drawing" viewBox="0 0 130 180" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.3"><path d="M54 170C65 111 59 57 88 12M65 114l35-26M65 91 38 64M69 66l31-26M62 137l-29-24"/><path d="M88 12C64 20 69 41 76 43 90 34 93 23 88 12ZM100 40C104 60 86 72 75 65 76 50 90 43 100 40ZM100 88C110 108 82 127 68 115 76 98 90 94 100 88ZM38 64C20 65 29 91 63 94 63 77 51 67 38 64ZM33 113C12 116 26 143 62 139 59 123 43 116 33 113Z"/></g></svg>
+      </section>
+
+      <div class="storage-warning" id="storage-warning" role="alert" hidden><p id="storage-message"></p><div><button class="text-button" type="button" id="recover-button" hidden>Récupérer le fichier existant</button><button class="text-button" type="button" id="reset-storage-button" hidden>Réinitialiser le stockage</button><button class="text-button" type="button" id="retry-storage-button">Réessayer la sauvegarde</button><button class="text-button" type="button" id="reload-button" hidden>Recharger le carnet</button></div></div>
+
+      <nav class="week-toolbar" aria-label="Choisir la semaine">
+        <div class="week-navigation"><button class="icon-button" id="previous-week" type="button" aria-label="Semaine précédente"><svg class="icon" aria-hidden="true"><use href="#i-arrow-left"/></svg></button><div class="week-heading"><span class="eyebrow">AU MENU</span><h2 id="week-title" aria-live="polite"></h2></div><button class="icon-button" id="next-week" type="button" aria-label="Semaine suivante"><svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></button></div>
+        <button type="button" class="button button-quiet current-week" id="current-week">Cette semaine</button>
+      </nav>
+
+      <div class="workspace">
+        <section class="planner" id="planning" aria-labelledby="planning-title" tabindex="-1">
+          <div class="section-heading"><div class="section-label"><span class="section-number">01</span><h2 id="planning-title">Vos menus</h2></div><span class="meal-count" id="meal-count">0 / 9 repas prévus</span></div>
+          <div class="weekday-grid" id="weekday-grid"></div>
+          <div class="weekend-label"><span>Le week-end, on prend le temps</span><span class="weekend-rule"></span></div>
+          <div class="weekend-grid" id="weekend-grid"></div>
+          <div class="planner-bottom"><span class="planner-note"><svg class="icon" aria-hidden="true"><use href="#i-edit"/></svg>Un clic sur un repas pour le compléter.</span><button class="text-button" type="button" id="duplicate-button"><svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg>Dupliquer les menus</button></div>
+        </section>
+
+        <aside class="shopping-panel" aria-labelledby="shopping-title">
+          <div class="section-heading"><div class="section-label"><span class="section-number">02</span><h2 id="shopping-title">Les courses</h2></div><svg class="icon shopping-bag" aria-hidden="true"><use href="#i-bag"/></svg></div>
+          <p class="shopping-subtitle">Ce qu’il faut pour la semaine.</p>
+          <div class="shopping-empty" id="shopping-empty"><span class="empty-bag"><svg aria-hidden="true"><use href="#i-bag"/></svg></span><p>Un petit tour des placards,<br>et on fait la liste.</p></div>
+          <ul class="shopping-list" id="shopping-list" aria-label="Liste de courses"></ul>
+          <form class="shopping-form" id="shopping-form">
+            <label for="shopping-name">Ajouter un article</label>
+            <input id="shopping-name" name="name" placeholder="Un ingrédient, un produit…" maxlength="200" required autocomplete="off">
+            <div class="shopping-form-bottom"><label class="visually-hidden" for="shopping-quantity">Quantité et unité</label><input id="shopping-quantity" name="quantity" placeholder="Quantité (ex. 500 g)" maxlength="60" autocomplete="off"><button type="submit" class="button button-primary"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg>Ajouter</button></div>
+          </form>
+          <div class="shopping-footer"><span id="shopping-count">Aucun article</span><button type="button" class="text-button" id="clear-checked" hidden>Retirer les cochés</button></div>
+          <p class="shopping-hint">Une liste à composer librement, indépendante des ingrédients des menus.</p>
+        </aside>
+      </div>
+
+      <div class="week-end-actions"><p><span class="small-dot"></span> Vos menus restent dans ce navigateur, sur cet appareil.</p><button class="text-button danger-text" id="clear-week" type="button"><svg class="icon" aria-hidden="true"><use href="#i-trash"/></svg>Effacer cette semaine</button></div>
+    </main>
+    <footer class="site-footer"><span>À table<span class="brand-dot">.</span></span><p>Moins d’improvisation. Plus de bons moments.</p><span class="footer-detail">Votre carnet, tout simplement.</span></footer>
+  </div>
+
+  <dialog id="meal-dialog" class="modal" aria-labelledby="meal-dialog-title"><form id="meal-form">
+    <div class="modal-heading"><div><p class="eyebrow" id="meal-date"></p><h2 id="meal-dialog-title">Prévoir le dîner</h2></div><button class="icon-button" type="button" data-close="meal-dialog" aria-label="Fermer l’éditeur de repas"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div>
+    <label for="meal-name">Au menu <span class="required-label">obligatoire</span></label><input id="meal-name" name="name" maxlength="200" placeholder="Qu’avez-vous envie de cuisiner ?" required autocomplete="off">
+    <label for="meal-ingredients">Ingrédients <span class="optional-label">facultatif</span></label><textarea id="meal-ingredients" name="ingredients" rows="4" maxlength="6000" placeholder="Un ingrédient par ligne, avec sa quantité si besoin."></textarea>
+    <label for="meal-note">Une note pour plus tard <span class="optional-label">facultatif</span></label><textarea id="meal-note" name="note" rows="2" maxlength="3000" placeholder="À décongeler, restes à prévoir, lien d’une recette…"></textarea>
+    <p class="form-error" id="meal-error" role="alert" hidden></p>
+    <div class="modal-actions"><button id="delete-meal" class="text-button danger-text" type="button"><svg class="icon" aria-hidden="true"><use href="#i-trash"/></svg>Supprimer</button><div><button class="button button-quiet" type="button" data-close="meal-dialog">Annuler</button><button class="button button-primary" type="submit">Enregistrer le menu</button></div></div>
+  </form></dialog>
+
+  <dialog id="backup-dialog" class="modal modal-small" aria-labelledby="backup-title"><div class="modal-heading"><div><p class="eyebrow">GARDER UNE COPIE</p><h2 id="backup-title">Vos sauvegardes</h2></div><button class="icon-button" type="button" data-close="backup-dialog" aria-label="Fermer les sauvegardes"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div><p class="modal-intro">Exportez toutes vos semaines pour les conserver ou les retrouver dans un autre navigateur.</p><button class="backup-choice" type="button" id="export-button"><svg class="icon" aria-hidden="true"><use href="#i-download"/></svg><span><strong>Exporter mes données</strong><small>Télécharger une sauvegarde JSON.</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></button><button class="backup-choice" type="button" id="import-button"><svg class="icon" aria-hidden="true"><use href="#i-upload"/></svg><span><strong>Importer une sauvegarde</strong><small>Remplace toutes les données actuelles après confirmation.</small></span></button><input id="import-file" type="file" accept=".json,application/json" hidden><p class="form-error" id="import-error" role="alert" hidden></p><p class="backup-note">Les données ne se synchronisent pas automatiquement entre vos appareils.</p></dialog>
+
+  <dialog id="duplicate-dialog" class="modal modal-small" aria-labelledby="duplicate-title"><form id="duplicate-form"><div class="modal-heading"><div><p class="eyebrow">UNE SEMAINE D’AVANCE</p><h2 id="duplicate-title">Reprendre ces menus</h2></div><button class="icon-button" type="button" data-close="duplicate-dialog" aria-label="Fermer la duplication"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div><p class="modal-intro">Copiez les 9 emplacements vers une autre semaine. La liste de courses de destination sera conservée.</p><label for="duplicate-date">Une date dans la semaine de destination</label><input type="date" id="duplicate-date" required min="1900-01-01" max="9998-12-31"><p id="duplicate-preview" class="date-preview"></p><p class="form-error" id="duplicate-error" role="alert" hidden></p><div class="modal-actions"><span></span><button class="button button-primary" type="submit">Dupliquer les menus</button></div></form></dialog>
+
+  <dialog id="confirm-dialog" class="modal modal-small" aria-labelledby="confirm-title" aria-describedby="confirm-message"><h2 id="confirm-title"></h2><p id="confirm-message" class="modal-intro"></p><div class="confirm-actions"><button class="button button-outline" id="confirm-cancel" type="button">Annuler</button><button class="button button-danger" id="confirm-ok" type="button">Confirmer</button></div></dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <noscript><div class="noscript">Activez JavaScript pour utiliser le planning et sauvegarder vos menus.</div></noscript>
+</body>
+</html>
